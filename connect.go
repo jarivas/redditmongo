@@ -11,43 +11,59 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func Connect(url, dbName string) error {
-	if url == "" || dbName != "" {
-		return errors.New("impossible to connect, no data")
-	}
-
-	return connectAndCreateDb(dbName, url)
+type MongoStorage struct {
+	url    string
+	dbName string
 }
 
-func ConnectUsingEnv() error {
-	dbName := os.Getenv("MONGO_DB_NAME")
-	url := os.Getenv("MONGO_CONNECTION_STRING")
-
-	return connectAndCreateDb(dbName, url)
-}
-
-func getCollection() *mgm.Collection {
-	return mgm.CollectionByName(mongoCollectionName)
-}
-
-func connectAndCreateDb(dbName, url string) error {
-	err := mgm.SetDefaultConfig(nil, dbName, options.Client().ApplyURI(url))
+func (m MongoStorage) New(url, dbName string) (*MongoStorage, error) {
+	err := m.connect(url, dbName)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	new := MongoStorage{
+		url:    url,
+		dbName: dbName,
+	}
+
+	return &new, nil
+}
+
+func (m MongoStorage) FromEnv() (*MongoStorage, error) {
+	url := os.Getenv("MONGO_CONNECTION_STRING")
+	dbName := os.Getenv("MONGO_DB_NAME")
+
+	return m.New(url, dbName)
+}
+
+func (m MongoStorage) GetCollection(name string) *mgm.Collection {
+	return mgm.CollectionByName(name)
+}
+
+func (m MongoStorage) CreateCollection(name string) error {
 	_, client, _, err := mgm.DefaultConfigs()
 
 	if err != nil {
 		return err
 	}
 
-	c := client.Database(dbName).Collection(mongoCollectionName)
+	c := client.Database(m.dbName).Collection(name)
 	i := mongo.IndexModel{
-		Keys: bson.D{{Key: "Id", Value: 1}},
+		Keys: bson.D{
+			{Key: "Id", Value: 1},
+		},
 	}
 	_, err = c.Indexes().CreateOne(context.TODO(), i)
 
 	return err
+}
+
+func (m MongoStorage) connect(url, dbName string) error {
+	if url == "" || dbName != "" {
+		return errors.New("impossible to connect, no data")
+	}
+
+	return mgm.SetDefaultConfig(nil, dbName, options.Client().ApplyURI(url))
 }

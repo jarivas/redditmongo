@@ -13,7 +13,7 @@ func TestFromScraped(t *testing.T) {
 		Body: "asd",
 	}
 
-	p := Post{}.FromScraped(rp)
+	p := Post{}.FromScraped("", rp)
 
 	if p.Id != "asd" {
 		t.Errorf("Wrong id: %v", p.Id)
@@ -35,7 +35,7 @@ func TestValidate(t *testing.T) {
 		Body: "asd",
 	}
 
-	p := Post{}.FromScraped(rp)
+	p := Post{}.FromScraped("", rp)
 
 	if !p.Validate() {
 		t.Error("Problem with validation")
@@ -57,7 +57,7 @@ func TestCheckExists(t *testing.T) {
 
 	p := Post{}.FromScraped(rp)
 
-	err = getCollection().Delete(&p)
+	err = getCollection("test").Delete(&p)
 
 	if err != nil {
 		t.Error(err)
@@ -89,7 +89,7 @@ func TestSave(t *testing.T) {
 
 	p := Post{}.FromScraped(rp)
 
-	err = getCollection().Delete(&p)
+	err = getCollection("test").Delete(&p)
 
 	if err != nil {
 		t.Error(err)
