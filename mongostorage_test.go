@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestNew(t *testing.T) {
-	err := ConnectUsingEnv()
+func TestFromEnv(t *testing.T) {
+	_, err := MongoStorage{}.FromEnv()
 
 	if err != nil {
 		t.Error(err)

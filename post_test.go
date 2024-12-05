@@ -6,6 +6,8 @@ import (
 	"github.com/jarivas/redditscraper"
 )
 
+const testCollection string = "test"
+
 func TestFromScraped(t *testing.T) {
 	rp := &redditscraper.Post{
 		Id: "asd",
@@ -13,7 +15,7 @@ func TestFromScraped(t *testing.T) {
 		Body: "asd",
 	}
 
-	p := Post{}.FromScraped("", rp)
+	p := Post{}.FromScraped(rp, testCollection)
 
 	if p.Id != "asd" {
 		t.Errorf("Wrong id: %v", p.Id)
@@ -26,6 +28,10 @@ func TestFromScraped(t *testing.T) {
 	if p.Body != "asd" {
 		t.Errorf("Wrong body: %v", p.Body)
 	}
+
+	if p.subreddit != testCollection {
+		t.Errorf("Wrong subreddit: %v", p.Body)
+	}
 }
 
 func TestValidate(t *testing.T) {
@@ -35,7 +41,7 @@ func TestValidate(t *testing.T) {
 		Body: "asd",
 	}
 
-	p := Post{}.FromScraped("", rp)
+	p := Post{}.FromScraped(rp, testCollection)
 
 	if !p.Validate() {
 		t.Error("Problem with validation")
@@ -43,7 +49,7 @@ func TestValidate(t *testing.T) {
 }
 
 func TestCheckExists(t *testing.T) {
-	err := ConnectUsingEnv()
+	m, err := MongoStorage{}.FromEnv()
 
 	if err != nil {
 		t.Error(err)
@@ -55,15 +61,15 @@ func TestCheckExists(t *testing.T) {
 		Body: "asd",
 	}
 
-	p := Post{}.FromScraped(rp)
+	p := Post{}.FromScraped(rp, testCollection)
 
-	err = getCollection("test").Delete(&p)
+	err = m.GetCollection(testCollection).Delete(&p)
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	exists, err := p.CheckExists()
+	exists, err := p.CheckExists(m)
 
 	if err != nil {
 		t.Error(err)
@@ -75,8 +81,8 @@ func TestCheckExists(t *testing.T) {
 }
 
 func TestSave(t *testing.T) {
-	err := ConnectUsingEnv()
-
+	m, err := MongoStorage{}.FromEnv()
+	
 	if err != nil {
 		t.Error(err)
 	}
@@ -87,21 +93,21 @@ func TestSave(t *testing.T) {
 		Body: "asd",
 	}
 
-	p := Post{}.FromScraped(rp)
+	p := Post{}.FromScraped(rp, testCollection)
 
-	err = getCollection("test").Delete(&p)
+	err = m.GetCollection(testCollection).Delete(&p)
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = p.Save()
+	err = p.Save(m)
 
 	if err != nil {
 		t.Error(err)
 	}
 	
-	exists, err := p.CheckExists()
+	exists, err := p.CheckExists(m)
 
 	if err != nil {
 		t.Error(err)

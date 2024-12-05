@@ -13,13 +13,15 @@ type Post struct {
 	Id               string `json:"id" bson:"id"`
 	Title            string `json:"title" bson:"title"`
 	Body             string `json:"body" bson:"body"`
+	subreddit        string
 }
 
-func (p Post) FromScraped(post *redditscraper.Post) Post {
+func (p Post) FromScraped(post *redditscraper.Post, subreddit string) Post {
 	return Post{
 		Id:    post.Id,
 		Title: post.Title,
 		Body:  post.Body,
+		subreddit: subreddit,
 	}
 }
 
@@ -27,14 +29,14 @@ func (p Post) Validate() bool {
 	return p.Id != "" && p.Title != "" && p.Body != ""
 }
 
-func (p *Post) CheckExists() (bool, error) {
+func (p *Post) CheckExists(m *MongoStorage) (bool, error) {
 	if p.Id == "" {
 		return false, errors.New("empty model")
 	}
 
 	post := &Post{}
 
-	err := getCollection().First(
+	err := m.GetCollection(p.subreddit).First(
 		bson.M{
 			"id": p.Id,
 		}, post)
@@ -54,13 +56,13 @@ func (p *Post) CheckExists() (bool, error) {
 	return false, nil
 }
 
-func (p Post) Save() error {
+func (p Post) Save(m *MongoStorage) error {
 
 	if !p.Validate() {
 		return errors.New("empty model")
 	}
 
-	exists, err := p.CheckExists()
+	exists, err := p.CheckExists(m)
 
 	if err != nil {
 		return err
@@ -70,5 +72,5 @@ func (p Post) Save() error {
 		return nil
 	}
 
-	return getCollection().Create(&p)
+	return m.GetCollection(p.subreddit).Create(&p)
 }

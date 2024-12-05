@@ -17,15 +17,15 @@ type MongoStorage struct {
 }
 
 func (m MongoStorage) New(url, dbName string) (*MongoStorage, error) {
-	err := m.connect(url, dbName)
-
-	if err != nil {
-		return nil, err
-	}
-
 	new := MongoStorage{
 		url:    url,
 		dbName: dbName,
+	}
+
+	err := new.connect()
+
+	if err != nil {
+		return nil, err
 	}
 
 	return &new, nil
@@ -60,10 +60,10 @@ func (m MongoStorage) CreateCollection(name string) error {
 	return err
 }
 
-func (m MongoStorage) connect(url, dbName string) error {
-	if url == "" || dbName != "" {
+func (m MongoStorage) connect() error {
+	if m.url == "" || m.dbName == "" {
 		return errors.New("impossible to connect, no data")
 	}
 
-	return mgm.SetDefaultConfig(nil, dbName, options.Client().ApplyURI(url))
+	return mgm.SetDefaultConfig(nil, m.dbName, options.Client().ApplyURI(m.url))
 }
