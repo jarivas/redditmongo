@@ -5,7 +5,7 @@ import (
 )
 
 func TestRedditMongo(t *testing.T) {
-	err := RedditMongoFromEnv("AmItheasshole")
+	err := RedditMongoFromEnv("AmItheasshole", "")
 
 	if err != nil {
 		t.Error(err)

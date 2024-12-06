@@ -6,7 +6,7 @@ import (
 	"github.com/jarivas/redditscraper"
 )
 
-func RedditMongo(rp *RedditParams, mp *MongoParams) error {
+func RedditMongo(rp *RedditParams, mp *MongoParams, nextId string) error {
 	if !rp.validate() {
 		return errors.New("invalid reddit params")
 	}
@@ -15,10 +15,10 @@ func RedditMongo(rp *RedditParams, mp *MongoParams) error {
 		return errors.New("invalid mongo params")
 	}
 
-	return redditMongoHelper(rp, mp)
+	return redditMongoHelper(rp, mp, nextId)
 }
 
-func RedditMongoFromEnv(subreddit string) error {
+func RedditMongoFromEnv(subreddit string, nextId string) error {
 	rp, err := RedditParams{}.Default(subreddit)
 
 	if err != nil {
@@ -31,10 +31,10 @@ func RedditMongoFromEnv(subreddit string) error {
 		return err
 	}
 
-	return redditMongoHelper(rp, mp)
+	return redditMongoHelper(rp, mp, nextId)
 }
 
-func redditMongoHelper(rp *RedditParams, mp *MongoParams) error {
+func redditMongoHelper(rp *RedditParams, mp *MongoParams, nextId string) error {
 	scraper, err := rp.getScraper()
 
 	if err != nil {
@@ -50,7 +50,7 @@ func redditMongoHelper(rp *RedditParams, mp *MongoParams) error {
 	c := make(chan *redditscraper.CachedPosts)
 	e := make(chan error)
 
-	go scraper.Scrape(c, e)
+	go scraper.Scrape(c, e, nextId)
 
 	for {
 		select {

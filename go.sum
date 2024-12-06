@@ -8,8 +8,8 @@ github.com/golang/snappy v0.0.4/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEW
 github.com/google/go-cmp v0.5.2/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/jarivas/redditscraper v1.0.5 h1:j5ke/vc2xEHDcv0iwNHQrnb8H5Y47u4Mes9Hmub74SE=
-github.com/jarivas/redditscraper v1.0.5/go.mod h1:wLpU/1kGuwxHvJ7nFnw2Kl/Kx+iZFKAFLRVf0CBd/qQ=
+github.com/jarivas/redditscraper v1.0.6 h1:jEEXEM3rptJLIsX8KYOwpF5bAhmizjzJCnzcf8CLnco=
+github.com/jarivas/redditscraper v1.0.6/go.mod h1:wLpU/1kGuwxHvJ7nFnw2Kl/Kx+iZFKAFLRVf0CBd/qQ=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
