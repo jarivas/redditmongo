@@ -3,7 +3,6 @@ package redditmongo
 import (
 	"context"
 	"errors"
-	"os"
 
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,15 +10,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type MongoStorage struct {
+type mongoStorage struct {
 	url    string
 	dbName string
 }
 
-func (m MongoStorage) New(url, dbName string) (*MongoStorage, error) {
-	new := MongoStorage{
-		url:    url,
-		dbName: dbName,
+func (m mongoStorage) New(mp *MongoParams) (*mongoStorage, error) {
+	new := mongoStorage{
+		url:    mp.url,
+		dbName: mp.dbName,
 	}
 
 	err := new.connect()
@@ -31,18 +30,11 @@ func (m MongoStorage) New(url, dbName string) (*MongoStorage, error) {
 	return &new, nil
 }
 
-func (m MongoStorage) FromEnv() (*MongoStorage, error) {
-	url := os.Getenv("MONGO_CONNECTION_STRING")
-	dbName := os.Getenv("MONGO_DB_NAME")
-
-	return m.New(url, dbName)
-}
-
-func (m MongoStorage) GetCollection(name string) *mgm.Collection {
+func (m mongoStorage) GetCollection(name string) *mgm.Collection {
 	return mgm.CollectionByName(name)
 }
 
-func (m MongoStorage) CreateCollection(name string) error {
+func (m mongoStorage) CreateCollection(name string) error {
 	_, client, _, err := mgm.DefaultConfigs()
 
 	if err != nil {
@@ -60,7 +52,7 @@ func (m MongoStorage) CreateCollection(name string) error {
 	return err
 }
 
-func (m MongoStorage) connect() error {
+func (m mongoStorage) connect() error {
 	if m.url == "" || m.dbName == "" {
 		return errors.New("impossible to connect, no data")
 	}

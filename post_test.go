@@ -10,9 +10,9 @@ const testCollection string = "test"
 
 func TestFromScraped(t *testing.T) {
 	rp := &redditscraper.Post{
-		Id: "asd",
+		Id:    "asd",
 		Title: "asd",
-		Body: "asd",
+		Body:  "asd",
 	}
 
 	p := Post{}.FromScraped(rp, testCollection)
@@ -36,9 +36,9 @@ func TestFromScraped(t *testing.T) {
 
 func TestValidate(t *testing.T) {
 	rp := &redditscraper.Post{
-		Id: "asd",
+		Id:    "asd",
 		Title: "asd",
-		Body: "asd",
+		Body:  "asd",
 	}
 
 	p := Post{}.FromScraped(rp, testCollection)
@@ -49,16 +49,22 @@ func TestValidate(t *testing.T) {
 }
 
 func TestCheckExists(t *testing.T) {
-	m, err := MongoStorage{}.FromEnv()
+	mp, err  := MongoParams{}.FromEnv()
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	m, err := mongoStorage{}.New(mp)
 
 	if err != nil {
 		t.Error(err)
 	}
 
 	rp := &redditscraper.Post{
-		Id: "asd123213",
+		Id:    "asd123213",
 		Title: "asd",
-		Body: "asd",
+		Body:  "asd",
 	}
 
 	p := Post{}.FromScraped(rp, testCollection)
@@ -81,16 +87,22 @@ func TestCheckExists(t *testing.T) {
 }
 
 func TestSave(t *testing.T) {
-	m, err := MongoStorage{}.FromEnv()
-	
+	mp, err  := MongoParams{}.FromEnv()
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	m, err := mongoStorage{}.New(mp)
+
 	if err != nil {
 		t.Error(err)
 	}
 
 	rp := &redditscraper.Post{
-		Id: "asd",
+		Id:    "asd",
 		Title: "asd",
-		Body: "asd",
+		Body:  "asd",
 	}
 
 	p := Post{}.FromScraped(rp, testCollection)
@@ -106,7 +118,7 @@ func TestSave(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	
+
 	exists, err := p.CheckExists(m)
 
 	if err != nil {

@@ -18,9 +18,9 @@ type Post struct {
 
 func (p Post) FromScraped(post *redditscraper.Post, subreddit string) Post {
 	return Post{
-		Id:    post.Id,
-		Title: post.Title,
-		Body:  post.Body,
+		Id:        post.Id,
+		Title:     post.Title,
+		Body:      post.Body,
 		subreddit: subreddit,
 	}
 }
@@ -29,7 +29,7 @@ func (p Post) Validate() bool {
 	return p.Id != "" && p.Title != "" && p.Body != ""
 }
 
-func (p *Post) CheckExists(m *MongoStorage) (bool, error) {
+func (p *Post) CheckExists(m *mongoStorage) (bool, error) {
 	if p.Id == "" {
 		return false, errors.New("empty model")
 	}
@@ -56,7 +56,7 @@ func (p *Post) CheckExists(m *MongoStorage) (bool, error) {
 	return false, nil
 }
 
-func (p Post) Save(m *MongoStorage) error {
+func (p Post) Save(m *mongoStorage) error {
 
 	if !p.Validate() {
 		return errors.New("empty model")
