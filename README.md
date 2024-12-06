@@ -23,12 +23,12 @@ MONGO_INITDB_ROOT_PASSWORD=example
 package demo
 
 import (
-	"github.com/jarivas/redditsmongo"
+	"github.com/jarivas/redditmongo"
     "log"
 )
 
 func main() {
-	err := RedditMongo("AmItheasshole", 100, 3000)
+	err := RedditMongoFromEnv("AmItheasshole")
 
 	if err != nil {
 		log.Fatal(err)
