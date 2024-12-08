@@ -3,7 +3,7 @@
 Scraps a particular and saves its posts to a mongodb
 
 ## Install
-```go get https://github.com/jarivas/redditmongo```
+```go get github.com/jarivas/redditmongo```
 
 ## Usage
 **.env**
