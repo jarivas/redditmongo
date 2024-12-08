@@ -28,12 +28,11 @@ import (
 )
 
 func main() {
-	err := RedditMongoFromEnv("AmItheasshole")
+	//err := RedditMongoFromEnv("AmItheasshole", "")
+	err := RedditMongoFromEnv("AmItheasshole", "1h3wnsj")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 ```
-
-For more flexibility please check:
