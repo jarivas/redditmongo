@@ -6,7 +6,7 @@ import (
 	"github.com/jarivas/redditscraper"
 )
 
-const testCollection string = "test"
+const testCollection string = "AmItheAsshole"
 
 func TestFromScraped(t *testing.T) {
 	rp := &redditscraper.Post{
@@ -49,13 +49,8 @@ func TestValidate(t *testing.T) {
 }
 
 func TestCheckExists(t *testing.T) {
-	mp, err  := MongoParams{}.FromEnv()
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	m, err := mongoStorage{}.New(mp)
+	m := getMongoStorageTest(t)
+	err := m.ResetColection(testCollection)
 
 	if err != nil {
 		t.Error(err)
@@ -69,12 +64,6 @@ func TestCheckExists(t *testing.T) {
 
 	p := Post{}.FromScraped(rp, testCollection)
 
-	err = m.GetCollection(testCollection).Delete(&p)
-
-	if err != nil {
-		t.Error(err)
-	}
-
 	exists, err := p.CheckExists(m)
 
 	if err != nil {
@@ -87,13 +76,9 @@ func TestCheckExists(t *testing.T) {
 }
 
 func TestSave(t *testing.T) {
-	mp, err  := MongoParams{}.FromEnv()
+	m := getMongoStorageTest(t)
 
-	if err != nil {
-		t.Error(err)
-	}
-
-	m, err := mongoStorage{}.New(mp)
+	err := m.ResetColection(testCollection)
 
 	if err != nil {
 		t.Error(err)
@@ -106,8 +91,6 @@ func TestSave(t *testing.T) {
 	}
 
 	p := Post{}.FromScraped(rp, testCollection)
-
-	err = m.GetCollection(testCollection).Delete(&p)
 
 	if err != nil {
 		t.Error(err)
@@ -128,4 +111,20 @@ func TestSave(t *testing.T) {
 	if !exists {
 		t.Error("post not created")
 	}
+}
+
+func getMongoStorageTest(t *testing.T) *mongoStorage{
+	mp, err  := MongoParams{}.FromEnv()
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	m, err := mongoStorage{}.New(mp)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	return m
 }

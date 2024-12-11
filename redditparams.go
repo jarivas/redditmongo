@@ -10,11 +10,12 @@ const redditWaitMilliseconds int = 3000
 
 type RedditParams struct {
 	subreddit        string
+	nextId           string
 	maxPosts         int
 	waitMilliseconds int
 }
 
-func (r RedditParams) New(subreddit string, maxPosts int, waitMilliseconds int) (*RedditParams, error) {
+func (r RedditParams) New(subreddit, nextId string, maxPosts, waitMilliseconds int) (*RedditParams, error) {
 	if subreddit == "" {
 		return nil, errors.New("empty subreddit")
 	}
@@ -25,13 +26,14 @@ func (r RedditParams) New(subreddit string, maxPosts int, waitMilliseconds int) 
 
 	return &RedditParams{
 		subreddit:        subreddit,
+		nextId:           nextId,
 		maxPosts:         maxPosts,
 		waitMilliseconds: waitMilliseconds,
 	}, nil
 }
 
 func (r RedditParams) Default(subreddit string) (*RedditParams, error) {
-	return r.New(subreddit, redditMaxPosts, redditWaitMilliseconds)
+	return r.New(subreddit, "", redditMaxPosts, redditWaitMilliseconds)
 }
 
 func (r RedditParams) validate() bool {

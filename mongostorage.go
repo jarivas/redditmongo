@@ -52,6 +52,16 @@ func (m mongoStorage) CreateCollection(name string) error {
 	return err
 }
 
+func (m mongoStorage) ResetColection(name string) error {
+	err := m.GetCollection(name).Drop(context.TODO())
+
+	if err != nil {
+		return err
+	}
+
+	return m.CreateCollection(name)
+}
+
 func (m mongoStorage) connect() error {
 	if m.url == "" || m.dbName == "" {
 		return errors.New("impossible to connect, no data")

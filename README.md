@@ -1,6 +1,6 @@
 # Reddit Mongo
 ## Description
-Scraps a particular and saves its posts to a mongodb
+Scraps a particular subreddit and saves its posts to a mongodb
 
 ## Install
 ```go get github.com/jarivas/redditmongo```
@@ -28,11 +28,30 @@ import (
 )
 
 func main() {
-	//err := RedditMongoFromEnv("AmItheasshole", "")
-	err := RedditMongoFromEnv("AmItheasshole", "1h3wnsj")
+	rp, err := RedditParams{}.Default(testCollection)
 
 	if err != nil {
-		log.Fatal(err)
+		t.Error(err)
+	}
+
+	rm, err := RedditMongo{}.FromEnv(rp)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	s := make(chan string)
+
+	go func() {
+		err = rm.Scrape(s)
+
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+
+	for _, lastId := range(s) {
+
 	}
 }
 ```
