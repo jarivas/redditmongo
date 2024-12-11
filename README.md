@@ -28,10 +28,30 @@ import (
 )
 
 func main() {
-	err := RedditMongoFromEnv("AmItheasshole")
+	rp, err := RedditParams{}.Default(testCollection)
 
 	if err != nil {
-		log.Fatal(err)
+		t.Error(err)
+	}
+
+	rm, err := RedditMongo{}.FromEnv(rp)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	s := make(chan string)
+
+	go func() {
+		err = rm.Scrape(s)
+
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+
+	for _, lastId := range(s) {
+		
 	}
 }
 ```
