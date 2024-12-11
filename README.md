@@ -28,16 +28,16 @@ import (
 )
 
 func main() {
-	rp, err := RedditParams{}.Default(testCollection)
+	rp, err := redditmongo.RedditParams{}.Default(testCollection)
 
 	if err != nil {
-		t.Error(err)
+		log.Fatal(err)
 	}
 
-	rm, err := RedditMongo{}.FromEnv(rp)
+	rm, err := redditmongo.RedditMongo{}.FromEnv(rp)
 
 	if err != nil {
-		t.Error(err)
+		log.Fatal(err)
 	}
 
 	s := make(chan string)
@@ -46,11 +46,11 @@ func main() {
 		err = rm.Scrape(s)
 
 		if err != nil {
-			t.Error(err)
+		log.Fatal(err)
 		}
 	}()
 
-	for _, lastId := range(s) {
+	for lastId := range(s) {
 
 	}
 }
