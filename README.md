@@ -43,7 +43,7 @@ func main() {
 	s := make(chan string)
 
 	go func() {
-		err = rm.Scrape(s)
+		err = rm.Scrape(rp, s)
 
 		if err != nil {
 		log.Fatal(err)
