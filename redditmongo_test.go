@@ -45,6 +45,5 @@ func TestRedditMongoScrape(t *testing.T) {
 		case err = <-e:
 			t.Error(err)
 		}
-
 	}
 }
