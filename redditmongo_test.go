@@ -2,6 +2,7 @@ package redditmongo
 
 import (
 	"errors"
+	"log"
 	"testing"
 )
 
@@ -27,18 +28,23 @@ func TestRedditMongoScrape(t *testing.T) {
 	}
 
 	s := make(chan string)
+	e := make(chan error)
 
-	go func() {
-		err = rm.Scrape(rp, s)
+	go rm.Scrape(rp, s, e)
 
-		if err != nil {
+	for {
+		select {
+		case lastId := <-s:
+			log.Println(lastId)
+
+			if lastId == "" {
+				t.Error(errors.New("invalid nextId"))
+			}
+
+			return
+		case err = <-e:
 			t.Error(err)
 		}
-	}()
 
-	nextId := <- s
-
-	if nextId == "" {
-		t.Error(errors.New("invalid nextId"))
 	}
 }

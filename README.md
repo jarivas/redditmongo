@@ -39,19 +39,19 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	
 	s := make(chan string)
+	e := make(chan error)
 
-	go func() {
-		err = rm.Scrape(rp, s)
+	go rm.Scrape(rp, s, e)
 
-		if err != nil {
-		log.Fatal(err)
+	for {
+		select {
+		case lastId := <-s:
+
+		case err = <-e:
+			log.Fatal(err)
 		}
-	}()
-
-	for lastId := range(s) {
-
 	}
 }
 ```
