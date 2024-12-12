@@ -28,13 +28,13 @@ import (
 )
 
 func main() {
-	rp, err := redditmongo.RedditParams{}.Default(testCollection)
+	rm, err := redditmongo.RedditMongo{}.FromEnv()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rm, err := redditmongo.RedditMongo{}.FromEnv(rp)
+	rp, err := redditmongo.RedditParams{}.Default("AmItheasshole")
 
 	if err != nil {
 		log.Fatal(err)
