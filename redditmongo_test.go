@@ -14,13 +14,13 @@ func TestRedditMongoScrape(t *testing.T) {
 		t.Error(err)
 	}
 
-	rp, err := RedditParams{}.Default(testCollection)
+	rm, err := RedditMongo{}.FromEnv()
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	rm, err := RedditMongo{}.FromEnv(rp)
+	rp, err := RedditParams{}.Default(testCollection)
 
 	if err != nil {
 		t.Error(err)
@@ -29,7 +29,7 @@ func TestRedditMongoScrape(t *testing.T) {
 	s := make(chan string)
 
 	go func() {
-		err = rm.Scrape(s)
+		err = rm.Scrape(rp, s)
 
 		if err != nil {
 			t.Error(err)
