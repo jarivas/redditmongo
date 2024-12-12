@@ -7,48 +7,56 @@ import (
 )
 
 type RedditMongo struct {
-	rp *RedditParams
 	ms *mongoStorage
 }
 
-func (rm RedditMongo) New(rp *RedditParams, mp *MongoParams) (*RedditMongo, error) {
-	if !rp.validate() {
-		return nil, errors.New("invalid reddit params")
-	}
-
+func (rm RedditMongo) New(mp *MongoParams) (*RedditMongo, error) {
 	if !mp.validate() {
 		return nil, errors.New("invalid mongo params")
 	}
 
-	return getRedditMongoHelper(rp, mp)
+	ms, err := mongoStorage{}.New(mp)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &RedditMongo{
+		ms: ms,
+	}, nil
 }
 
-func (rm RedditMongo) FromEnv(rp *RedditParams) (*RedditMongo, error) {
+func (rm RedditMongo) FromEnv()(*RedditMongo, error) {
 	mp, err := MongoParams{}.FromEnv()
 
 	if err != nil {
 		return nil, err
 	}
 
-	return getRedditMongoHelper(rp, mp)
+	return rm.New(mp)
 }
 
-func (rm RedditMongo) Scrape(s chan <-string) error {
-	scraper, err := rm.rp.getScraper()
+func (rm *RedditMongo) Scrape(rp *RedditParams, s chan <-string) error {
+	if !rp.validate() {
+		return errors.New("invalid reddit params")
+	}
+
+	scraper, err := rp.getScraper()
 
 	if err != nil {
 		return err
 	}
 
+	subreddit := rp.subreddit
 	c := make(chan *redditscraper.CachedPosts)
 	e := make(chan error)
 
-	go scraper.Scrape(c, e, rm.rp.nextId)
+	go scraper.Scrape(c, e, rp.nextId)
 
 	for {
 		select {
 		case posts := <-c:
-			err = rm.receivePosts(posts, s)
+			err = rm.receivePosts(posts, subreddit, s)
 
 			if err != nil {
 				close(c)
@@ -63,13 +71,12 @@ func (rm RedditMongo) Scrape(s chan <-string) error {
 	}
 }
 
-func (rm RedditMongo) receivePosts(posts *redditscraper.CachedPosts, s chan <-string) error {
+func (rm RedditMongo) receivePosts(posts *redditscraper.CachedPosts, subreddit string, s chan <-string) error {
 	p := posts.GetPosts()
 
 	if len(p) == 0 {
 		return errors.New("empty posts from scraper")
 	}
-	subreddit := rm.rp.subreddit
 
 	for _, post := range p {
 		p := Post{}.FromScraped(post, subreddit)
@@ -84,17 +91,4 @@ func (rm RedditMongo) receivePosts(posts *redditscraper.CachedPosts, s chan <-st
 	}
 
 	return nil
-}
-
-func getRedditMongoHelper(rp *RedditParams, mp *MongoParams) (*RedditMongo, error) {
-	ms, err := mongoStorage{}.New(mp)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &RedditMongo{
-		rp: rp,
-		ms: ms,
-	}, nil
 }
