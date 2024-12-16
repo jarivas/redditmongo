@@ -7,59 +7,28 @@ import (
 )
 
 type RedditMongo struct {
-	ms *mongoStorage
+	ms *MongoStorage
+	rs *redditscraper.RedditScraper
 }
 
-func (rm RedditMongo) New(mp *MongoParams) (*RedditMongo, error) {
-	if !mp.validate() {
-		return nil, errors.New("invalid mongo params")
-	}
-
-	ms, err := mongoStorage{}.New(mp)
-
-	if err != nil {
-		return nil, err
-	}
-
+func (rm RedditMongo) New(ms *MongoStorage, rs *redditscraper.RedditScraper) (*RedditMongo, error) {
 	return &RedditMongo{
 		ms: ms,
+		rs: rs,
 	}, nil
 }
 
-func (rm RedditMongo) FromEnv() (*RedditMongo, error) {
-	mp, err := MongoParams{}.FromEnv()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return rm.New(mp)
-}
-
-func (rm *RedditMongo) Scrape(rp *RedditParams, s chan<- string, e chan<- error) {
-	if !rp.validate() {
-		e <- errors.New("invalid reddit params")
-		return
-	}
-
-	scraper, err := rp.getScraper()
-
-	if err != nil {
-		e <- err
-		return
-	}
-
-	subreddit := rp.subreddit
+func (rm *RedditMongo) Scrape(nextId string, s chan<- string, e chan<- error) {
 	c := make(chan *redditscraper.CachedPosts)
 
-	go scraper.Scrape(c, e, rp.nextId)
+	go rm.rs.Scrape(c, e, nextId)
 
 	for posts := range c {
-		rm.receivePosts(posts, subreddit, s, e)
+		rm.receivePosts(posts, s, e)
 	}
 }
 
-func (rm RedditMongo) receivePosts(posts *redditscraper.CachedPosts, subreddit string, s chan<- string, e chan<- error) {
+func (rm *RedditMongo) receivePosts(posts *redditscraper.CachedPosts, s chan<- string, e chan<- error) {
 	p := posts.GetPosts()
 
 	if len(p) == 0 {
@@ -67,7 +36,7 @@ func (rm RedditMongo) receivePosts(posts *redditscraper.CachedPosts, subreddit s
 	}
 
 	for _, post := range p {
-		p := Post{}.FromScraped(post, subreddit)
+		p := Post{}.FromScraped(post, rm.rs.GetSubreddit())
 
 		err := p.Save(rm.ms)
 

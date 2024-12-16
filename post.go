@@ -29,9 +29,9 @@ func (p Post) Validate() bool {
 	return p.Id != "" && p.Title != "" && p.Body != ""
 }
 
-func (p *Post) CheckExists(m *mongoStorage) (bool, error) {
+func (p *Post) CheckExists(m *MongoStorage) (bool, error) {
 	if p.Id == "" {
-		return false, errors.New("empty model")
+		return false, errors.New("empty model on check exists")
 	}
 
 	post := &Post{}
@@ -56,10 +56,10 @@ func (p *Post) CheckExists(m *mongoStorage) (bool, error) {
 	return false, nil
 }
 
-func (p Post) Save(m *mongoStorage) error {
+func (p Post) Save(m *MongoStorage) error {
 
 	if !p.Validate() {
-		return errors.New("empty model")
+		return errors.New("empty model on save")
 	}
 
 	exists, err := p.CheckExists(m)

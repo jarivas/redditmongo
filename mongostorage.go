@@ -3,6 +3,7 @@ package redditmongo
 import (
 	"context"
 	"errors"
+	"os"
 
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
@@ -10,15 +11,19 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type mongoStorage struct {
+type MongoStorage struct {
 	url    string
 	dbName string
 }
 
-func (m mongoStorage) New(mp *MongoParams) (*mongoStorage, error) {
-	new := mongoStorage{
-		url:    mp.url,
-		dbName: mp.dbName,
+func (m MongoStorage) New(url, dbName string) (*MongoStorage, error) {
+	if url == "" {
+		return nil, errors.New("empty mongo url")
+	}
+	
+	new := MongoStorage{
+		url:    url,
+		dbName: dbName,
 	}
 
 	err := new.connect()
@@ -30,11 +35,18 @@ func (m mongoStorage) New(mp *MongoParams) (*mongoStorage, error) {
 	return &new, nil
 }
 
-func (m mongoStorage) GetCollection(name string) *mgm.Collection {
+func (m MongoStorage) FromEnv()(*MongoStorage, error){
+	url := os.Getenv("MONGO_CONNECTION_STRING")
+	dbName := os.Getenv("MONGO_DB_NAME")
+
+	return m.New(url, dbName)
+}
+
+func (m *MongoStorage) GetCollection(name string) *mgm.Collection {
 	return mgm.CollectionByName(name)
 }
 
-func (m mongoStorage) CreateCollection(name string) error {
+func (m *MongoStorage) CreateCollection(name string) error {
 	_, client, _, err := mgm.DefaultConfigs()
 
 	if err != nil {
@@ -52,7 +64,7 @@ func (m mongoStorage) CreateCollection(name string) error {
 	return err
 }
 
-func (m mongoStorage) ResetColection(name string) error {
+func (m *MongoStorage) ResetColection(name string) error {
 	err := m.GetCollection(name).Drop(context.TODO())
 
 	if err != nil {
@@ -62,7 +74,7 @@ func (m mongoStorage) ResetColection(name string) error {
 	return m.CreateCollection(name)
 }
 
-func (m mongoStorage) connect() error {
+func (m *MongoStorage) connect() error {
 	if m.url == "" || m.dbName == "" {
 		return errors.New("impossible to connect, no data")
 	}

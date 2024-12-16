@@ -28,22 +28,28 @@ import (
 )
 
 func main() {
-	rm, err := redditmongo.RedditMongo{}.FromEnv()
+	ms, err := MongoStorage{}.FromEnv()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rp, err := redditmongo.RedditParams{}.Default("AmItheasshole")
+	rs, err := redditscraper.RedditScraper{}.FromEnv("AmItheasshole")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 	
+	rm, err := RedditMongo{}.New(ms, rs)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	s := make(chan string)
 	e := make(chan error)
 
-	go rm.Scrape(rp, s, e)
+	go rm.Scrape("", s, e)
 
 	for {
 		select {

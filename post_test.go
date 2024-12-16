@@ -113,14 +113,9 @@ func TestSave(t *testing.T) {
 	}
 }
 
-func getMongoStorageTest(t *testing.T) *mongoStorage{
-	mp, err  := MongoParams{}.FromEnv()
+func getMongoStorageTest(t *testing.T) *MongoStorage {
 
-	if err != nil {
-		t.Error(err)
-	}
-
-	m, err := mongoStorage{}.New(mp)
+	m, err := MongoStorage{}.FromEnv()
 
 	if err != nil {
 		t.Error(err)
