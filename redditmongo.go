@@ -18,10 +18,10 @@ func (rm RedditMongo) New(ms *MongoStorage, rs *redditscraper.RedditScraper) (*R
 	}, nil
 }
 
-func (rm *RedditMongo) Scrape(nextId string, s chan<- string, e chan<- error) {
+func (rm *RedditMongo) Scrape(s chan<- string, e chan<- error) {
 	c := make(chan *redditscraper.CachedPosts)
 
-	go rm.rs.Scrape(c, e, nextId)
+	go rm.rs.ScrapeAll(c, e)
 
 	for posts := range c {
 		rm.receivePosts(posts, s, e)

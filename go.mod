@@ -3,7 +3,7 @@ module github.com/jarivas/redditmongo
 go 1.23.3
 
 require (
-	github.com/jarivas/redditscraper v1.1.0
+	github.com/jarivas/redditscraper v1.1.1
 	github.com/kamva/mgm/v3 v3.5.0
 	go.mongodb.org/mongo-driver v1.17.1
 )

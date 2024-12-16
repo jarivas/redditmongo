@@ -17,7 +17,7 @@ func TestScrape(t *testing.T) {
 	s := make(chan string)
 	e := make(chan error)
 
-	go rm.Scrape("", s, e)
+	go rm.Scrape(s, e)
 
 	for {
 		select {
