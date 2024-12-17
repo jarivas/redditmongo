@@ -28,36 +28,18 @@ import (
 )
 
 func main() {
-	ms, err := MongoStorage{}.FromEnv()
+	rm, err := RedditMongo{}.FromEnv("redditdev")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rs, err := redditscraper.RedditScraper{}.FromEnv("AmItheasshole")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	
-	rm, err := RedditMongo{}.New(ms, rs)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	s := make(chan string)
 	e := make(chan error)
 
-	go rm.Scrape("", s, e)
+	go rm.Scrape(e)
 
-	for {
-		select {
-		case lastId := <-s:
-
-		case err = <-e:
-			log.Fatal(err)
-		}
+	for err = range(e) {
+		log.Fatal(err)
 	}
 }
 ```

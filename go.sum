@@ -8,14 +8,8 @@ github.com/golang/snappy v0.0.4/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEW
 github.com/google/go-cmp v0.5.2/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/jarivas/redditscraper v1.0.7 h1:9YTRSTeTvWHc2sMduP24RFdlPdxraMlYU0zsumyr6Os=
-github.com/jarivas/redditscraper v1.0.7/go.mod h1:pAfbwzg8Eu6a/y3JOSxcUdjdjh/+pgfX8MKiBYWCvvA=
-github.com/jarivas/redditscraper v1.0.9 h1:dTHWK0oD2hmMXoSQslFUhl/o8UivRZetqxj7rGnV9FI=
-github.com/jarivas/redditscraper v1.0.9/go.mod h1:pAfbwzg8Eu6a/y3JOSxcUdjdjh/+pgfX8MKiBYWCvvA=
-github.com/jarivas/redditscraper v1.1.0 h1:byeJCvMW2TkoH9+9KDULZC31NN8duFChp/5dIfQtgAY=
-github.com/jarivas/redditscraper v1.1.0/go.mod h1:pAfbwzg8Eu6a/y3JOSxcUdjdjh/+pgfX8MKiBYWCvvA=
-github.com/jarivas/redditscraper v1.1.1 h1:7tPhtsh/QnlrPxrSI4VBTZ2E3NVh7JVHh0qEcRfGLHE=
-github.com/jarivas/redditscraper v1.1.1/go.mod h1:pAfbwzg8Eu6a/y3JOSxcUdjdjh/+pgfX8MKiBYWCvvA=
+github.com/jarivas/redditscraper v1.1.2 h1:S5F5eae0WHyRz91ltd/mHJ4MrgBuNmUnyyZCU96bMrg=
+github.com/jarivas/redditscraper v1.1.2/go.mod h1:pAfbwzg8Eu6a/y3JOSxcUdjdjh/+pgfX8MKiBYWCvvA=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/kamva/mgm/v3 v3.5.0 h1:/2mNshpqwAC9spdzJZ0VR/UZ/SY/PsNTrMjT111KQjM=
