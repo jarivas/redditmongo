@@ -18,10 +18,15 @@ type Post struct {
 }
 
 func (p Post) FromScraped(post *redditscraper.Post, subreddit string) *Post {
+	body := post.Body
+
+	if len(body) == 0 {
+		body = post.Title
+	}
 	return &Post{
 		Id:        post.Id,
 		Title:     post.Title,
-		Body:      post.Body,
+		Body:      body,
 		subreddit: subreddit,
 	}
 }
@@ -84,11 +89,6 @@ func (p *Post) CheckExists(m *MongoStorage) (bool, error) {
 }
 
 func (p *Post) Save(m *MongoStorage) error {
-
-	if !p.Validate() {
-		return errors.New("empty model on save")
-	}
-
 	exists, err := p.CheckExists(m)
 
 	if err != nil {

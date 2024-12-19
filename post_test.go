@@ -51,9 +51,14 @@ func TestValidate(t *testing.T) {
 }
 
 func TestGetLast(t *testing.T) {
-	TestCheckExists(t)
+	setMongoStorageTest(t)
+	err := m.ResetColection(testCollection)
 
-	_, err := Post{}.GetLast(m, testCollection)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, err = Post{}.GetLast(m, testCollection)
 
 	if err != nil {
 		t.Error(err)

@@ -35,6 +35,8 @@ func (rm RedditMongo) FromEnv(subreddit string) (*RedditMongo, error) {
 }
 
 func (rm *RedditMongo) Scrape(e chan<- error) {
+	var err error
+
 	p := make(chan *redditscraper.Post)
 
 	listing := redditscraper.PostListing{
@@ -47,10 +49,13 @@ func (rm *RedditMongo) Scrape(e chan<- error) {
 	for post := range p {
 		p := Post{}.FromScraped(post, rm.Subreddit)
 
-		err := p.Save(rm.ms)
+		if p.Validate() {
+			err = p.Save(rm.ms)
+		}
 
 		if err != nil {
 			e <- err
+			err = nil
 		}
 	}
 }
