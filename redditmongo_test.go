@@ -5,7 +5,7 @@ import (
 )
 
 func TestScrape(t *testing.T) {
-	rm, err := RedditMongo{}.FromEnv("redditdev")
+	rm, err := RedditMongo{}.FromEnv(testCollection)
 
 	if err != nil {
 		t.Error(err)

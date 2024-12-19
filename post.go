@@ -6,6 +6,7 @@ import (
 	"github.com/jarivas/redditscraper"
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Post struct {
@@ -16,8 +17,8 @@ type Post struct {
 	subreddit        string
 }
 
-func (p Post) FromScraped(post *redditscraper.Post, subreddit string) Post {
-	return Post{
+func (p Post) FromScraped(post *redditscraper.Post, subreddit string) *Post {
+	return &Post{
 		Id:        post.Id,
 		Title:     post.Title,
 		Body:      post.Body,
@@ -25,7 +26,29 @@ func (p Post) FromScraped(post *redditscraper.Post, subreddit string) Post {
 	}
 }
 
-func (p Post) Validate() bool {
+func (p Post) GetLast(m *MongoStorage, subreddit string) (*Post, error) {
+	result := []Post{}
+	var limit int64 = 1
+
+	err := m.GetCollection(subreddit).SimpleFind(&result, bson.M{}, &options.FindOptions{
+		Limit: &limit,
+		Sort: bson.M{
+			"_id": -1,
+		},
+	})
+
+	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &result[0], nil
+}
+
+func (p *Post) Validate() bool {
 	return p.Id != "" && p.Title != "" && p.Body != ""
 }
 
@@ -56,7 +79,7 @@ func (p *Post) CheckExists(m *MongoStorage) (bool, error) {
 	return false, nil
 }
 
-func (p Post) Save(m *MongoStorage) error {
+func (p *Post) Save(m *MongoStorage) error {
 
 	if !p.Validate() {
 		return errors.New("empty model on save")
@@ -72,5 +95,5 @@ func (p Post) Save(m *MongoStorage) error {
 		return nil
 	}
 
-	return m.GetCollection(p.subreddit).Create(&p)
+	return m.GetCollection(p.subreddit).Create(p)
 }

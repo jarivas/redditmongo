@@ -6,7 +6,9 @@ import (
 	"github.com/jarivas/redditscraper"
 )
 
-const testCollection string = "AmItheAsshole"
+const testCollection string = "redditdev"
+
+var m *MongoStorage
 
 func TestFromScraped(t *testing.T) {
 	rp := &redditscraper.Post{
@@ -48,8 +50,22 @@ func TestValidate(t *testing.T) {
 	}
 }
 
+func TestGetLast(t *testing.T) {
+	TestSave(t)
+
+	post, err := Post{}.GetLast(m, testCollection)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if post == nil {
+		t.Error("post is nil")
+	}
+}
+
 func TestCheckExists(t *testing.T) {
-	m := getMongoStorageTest(t)
+	setMongoStorageTest(t)
 	err := m.ResetColection(testCollection)
 
 	if err != nil {
@@ -76,7 +92,7 @@ func TestCheckExists(t *testing.T) {
 }
 
 func TestSave(t *testing.T) {
-	m := getMongoStorageTest(t)
+	setMongoStorageTest(t)
 
 	err := m.ResetColection(testCollection)
 
@@ -113,13 +129,16 @@ func TestSave(t *testing.T) {
 	}
 }
 
-func getMongoStorageTest(t *testing.T) *MongoStorage {
+func setMongoStorageTest(t *testing.T) {
+	if m != nil {
+		return
+	}
 
-	m, err := MongoStorage{}.FromEnv()
+	var err error
+
+	m, err = MongoStorage{}.FromEnv()
 
 	if err != nil {
 		t.Error(err)
 	}
-
-	return m
 }

@@ -37,7 +37,12 @@ func (rm RedditMongo) FromEnv(subreddit string) (*RedditMongo, error) {
 func (rm *RedditMongo) Scrape(e chan<- error) {
 	p := make(chan *redditscraper.Post)
 
-	go rm.rs.Listen(redditscraper.SubredditTop, p, e)
+	listing := redditscraper.PostListing{
+		Limit: redditscraper.MaxPosts,
+		Id: rm.getLastId(),
+	}
+
+	go rm.rs.Listen(redditscraper.SubredditTop, listing, p, e)
 
 	for post := range p {
 		p := Post{}.FromScraped(post, rm.Subreddit)
@@ -48,4 +53,14 @@ func (rm *RedditMongo) Scrape(e chan<- error) {
 			e <- err
 		}
 	}
+}
+
+func (rm *RedditMongo) getLastId() string {
+	p, err := Post{}.GetLast(rm.ms, rm.Subreddit)
+
+	if err != nil || p == nil {
+		return ""
+	}
+
+	return p.Id
 }
