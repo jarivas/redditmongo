@@ -18,6 +18,8 @@ github.com/jarivas/redditscraper v1.1.6 h1:T2X5wuhxFbZ/4n3rf/fCL6Zqm+k2xmvlnWQPt
 github.com/jarivas/redditscraper v1.1.6/go.mod h1:pAfbwzg8Eu6a/y3JOSxcUdjdjh/+pgfX8MKiBYWCvvA=
 github.com/jarivas/redditscraper v1.1.7 h1:PCJ5KjppkyhEXnPNQYfnvVa1ZDtkxhWFKuaxtETNnno=
 github.com/jarivas/redditscraper v1.1.7/go.mod h1:pAfbwzg8Eu6a/y3JOSxcUdjdjh/+pgfX8MKiBYWCvvA=
+github.com/jarivas/redditscraper v1.1.8 h1:5a/3ARgD1zezWU/vEhRWGJEDnFitjiuzw7c9vhPQTdU=
+github.com/jarivas/redditscraper v1.1.8/go.mod h1:pAfbwzg8Eu6a/y3JOSxcUdjdjh/+pgfX8MKiBYWCvvA=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/kamva/mgm/v3 v3.5.0 h1:/2mNshpqwAC9spdzJZ0VR/UZ/SY/PsNTrMjT111KQjM=
