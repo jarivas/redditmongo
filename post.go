@@ -45,6 +45,10 @@ func (p Post) GetLast(m *MongoStorage, subreddit string) (*Post, error) {
 		return nil, err
 	}
 
+	if len(result) == 0 {
+		return nil, nil
+	}
+
 	return &result[0], nil
 }
 

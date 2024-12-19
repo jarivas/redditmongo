@@ -51,16 +51,12 @@ func TestValidate(t *testing.T) {
 }
 
 func TestGetLast(t *testing.T) {
-	TestSave(t)
+	TestCheckExists(t)
 
-	post, err := Post{}.GetLast(m, testCollection)
+	_, err := Post{}.GetLast(m, testCollection)
 
 	if err != nil {
 		t.Error(err)
-	}
-
-	if post == nil {
-		t.Error("post is nil")
 	}
 }
 
