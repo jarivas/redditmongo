@@ -58,6 +58,18 @@ func TestGetLast(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+	TestSave(t)
+
+	post, err := Post{}.GetLast(m, testCollection)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if post == nil {
+		t.Error("post is nil")
+	}
 }
 
 func TestCheckExists(t *testing.T) {
